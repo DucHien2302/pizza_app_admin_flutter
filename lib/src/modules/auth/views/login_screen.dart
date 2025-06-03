@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import '../../../components/my_text_field.dart';
 import '../blocs/sign_in_bloc/sign_in_bloc.dart';
 
@@ -22,14 +21,20 @@ class _SignInScreenState extends State<SignInScreen> {
   String? _errorMsg;
 
   @override
+  void dispose() {
+    passwordController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocListener<SignInBloc, SignInState>(
-      listener: (context, state) {
+    return BlocListener<SignInBloc, SignInState>(        listener: (context, state) {
         if (state is SignInSuccess) {
           setState(() {
             signInRequired = false;
           });
-          context.go('/');
+          // Remove manual navigation - let GoRouter handle it based on AuthenticationBloc state
         } else if (state is SignInProcess) {
           setState(() {
             signInRequired = true;
