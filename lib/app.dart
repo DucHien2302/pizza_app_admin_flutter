@@ -9,9 +9,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
+    // Create a singleton repository
+    final userRepository = FirebaseUserRepo();
+    
+    return BlocProvider(
       create: (_) => AuthenticationBloc(
-        userRepository: FirebaseUserRepo(),
+        userRepository: userRepository,
       ),
       child: const MyAppView(),
     );
