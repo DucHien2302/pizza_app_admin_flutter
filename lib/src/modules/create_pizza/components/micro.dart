@@ -5,11 +5,13 @@ class MyMicroWidget extends StatelessWidget {
   final String title;
   final int value;
   final IconData icon;
+  final TextEditingController controller;
 
   const MyMicroWidget({
     required this.title,
     required this.value,
     required this.icon,
+    required this.controller,
     super.key,
   });
 
@@ -38,6 +40,7 @@ class MyMicroWidget extends StatelessWidget {
               ),
               const SizedBox(height: 4,),
               TextField(
+                controller: controller,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 12,

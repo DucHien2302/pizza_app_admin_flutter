@@ -1,6 +1,7 @@
 import 'dart:developer';
-
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../pizza_repository.dart';
 
 class FirebasePizzaRepo implements PizzaRepo {
@@ -14,6 +15,39 @@ class FirebasePizzaRepo implements PizzaRepo {
         .then((value) => value.docs.map((e) => 
           Pizza.fromEntity(PizzaEntity.fromDocument(e.data()))
         ).toList());
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> sendImage(Uint8List file, String name) async {
+    try {
+      Reference firebaseStorageRef = FirebaseStorage
+        .instance
+        .ref()
+        .child(name);
+
+      await firebaseStorageRef.putBlob(
+        file,
+        SettableMetadata(
+          contentType: 'image/jpeg',
+        )
+      );
+      return await firebaseStorageRef.getDownloadURL();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> createPizza(Pizza pizza) async {
+    try {
+      return await pizzaCollection
+        .doc(pizza.pizzaId)
+        .set(pizza.toEntity().toDocument());
     } catch (e) {
       log(e.toString());
       rethrow;
